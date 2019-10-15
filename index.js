@@ -47,6 +47,20 @@ server.put("/projects/:id", (req, res) => {
   return res.json({ error: "id not found" });
 });
 
+// Deletando projeto pelo id
+server.delete("/projects/:id", (req, res) => {
+  const { id } = req.params;
+
+  projects.forEach((item, index) => {
+    if (item.id == id) {
+      projects.splice(index, 1);
+      return res.json({ success: "Project deleted" });
+    }
+  });
+
+  return res.json({ error: "id not found" });
+});
+
 server.listen("3333", () => {
   console.log("Server Running in http://localhost:3333");
 });
