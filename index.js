@@ -61,6 +61,21 @@ server.delete("/projects/:id", (req, res) => {
   return res.json({ error: "id not found" });
 });
 
+// Cria tarefas no Projeto
+server.post("/projects/:id/tasks", (req, res) => {
+  const { id } = req.params;
+  const { title } = req.body;
+
+  projects.forEach(item => {
+    if (item.id == id) {
+      item.tasks.push(title);
+      return res.json(item);
+    }
+  });
+
+  return res.json({ error: "id not found" });
+});
+
 server.listen("3333", () => {
   console.log("Server Running in http://localhost:3333");
 });
