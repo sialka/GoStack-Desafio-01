@@ -4,9 +4,9 @@ Crie uma aplicação para armazenar projetos e suas tarefas do zero utilizando E
 
 ## Rotas
 
-- [ ] POST /projects: A rota deve receber id e title dentro corpo de cadastrar um novo projeto dentro de um array no seguinte formato: { id: "1", title: 'Novo projeto', tasks: [] }; Certifique-se de enviar tanto o ID quanto o título do projeto no formato string com àspas duplas.
+- [x] POST /projects: A rota deve receber id e title dentro corpo de cadastrar um novo projeto dentro de um array no seguinte formato: { id: "1", title: 'Novo projeto', tasks: [] }; Certifique-se de enviar tanto o ID quanto o título do projeto no formato string com àspas duplas.
 
-- [ ] GET /projects: Rota que lista todos projetos e suas tarefas;
+- [x] GET /projects: Rota que lista todos projetos e suas tarefas;
 
 - [ ] PUT /projects/:id: A rota deve alterar apenas o título do projeto com o id presente nos parâmetros da rota;
 
