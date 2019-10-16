@@ -5,12 +5,36 @@ const server = express();
 server.use(express.json());
 
 const projects = [];
+let totalOfRequests = 0;
+
+/** Middlewares */
+
+function projectExists(req, res, next) {
+  const { id } = req.params;
+
+  const project = projects.find(index => index.id == id);
+
+  if (!project) {
+    return res.status(400).json({ error: "Project not exists" });
+  }
+
+  return next();
+}
+
+function totalRequests(req, res, next) {
+  totalOfRequests++;
+  console.log(`Total de requesições: ${totalOfRequests}`);
+
+  return next();
+}
+
+server.use(totalRequests);
 
 /** Routes */
 
+// localhost:3333/
 server.get("/", (req, res) => {
-  //return res.send("Server Running");
-  return res.json(projects[0]);
+  return res.send("Server Running");
 });
 
 // Cria novo Projeto
@@ -25,7 +49,7 @@ server.post("/projects", (req, res) => {
 
   projects.push(project);
 
-  return res.json(project);
+  return res.status(201).json(project);
 });
 
 // Lista todos os projetos
@@ -34,46 +58,38 @@ server.get("/projects", (req, res) => {
 });
 
 // Busca pelo id e Altera o nome do projeto
-server.put("/projects/:id", (req, res) => {
-  const { id } = req.params;
-
-  projects.forEach(item => {
-    if (item.id == id) {
-      item.title = req.body.title;
-      return res.json(item);
-    }
-  });
-
-  return res.json({ error: "id not found" });
-});
-
-// Deletando projeto pelo id
-server.delete("/projects/:id", (req, res) => {
-  const { id } = req.params;
-
-  projects.forEach((item, index) => {
-    if (item.id == id) {
-      projects.splice(index, 1);
-      return res.json({ success: "Project deleted" });
-    }
-  });
-
-  return res.json({ error: "id not found" });
-});
-
-// Cria tarefas no Projeto
-server.post("/projects/:id/tasks", (req, res) => {
+server.put("/projects/:id", projectExists, (req, res) => {
   const { id } = req.params;
   const { title } = req.body;
 
-  projects.forEach(item => {
-    if (item.id == id) {
-      item.tasks.push(title);
-      return res.json(item);
-    }
-  });
+  const project = projects.find(index => index.id == id);
 
-  return res.json({ error: "id not found" });
+  project.title = title;
+
+  return res.status("202").json(project);
+});
+
+// Deletando projeto pelo id
+server.delete("/projects/:id", projectExists, (req, res) => {
+  const { id } = req.params;
+
+  const index = projects.find(index => index.id == id);
+
+  projects.splice(index, 1);
+
+  return res.status(202).json({ success: "Project deleted" });
+});
+
+// Cria tarefas no Projeto
+server.post("/projects/:id/tasks", projectExists, (req, res) => {
+  const { id } = req.params;
+  const { title } = req.body;
+
+  const project = projects.find(index => index.id == id);
+
+  project.tasks.push(title);
+
+  return res.status(201).json(project);
 });
 
 server.listen("3333", () => {
